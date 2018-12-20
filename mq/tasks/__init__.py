@@ -11,13 +11,19 @@ class CallbackTask(Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         pass
 
+    def on_retry(self, exc, task_id, args, kwargs, einfo):
+        pass
 
-# def mq_task(queue=celery_config.CELERY_DEFAULT_QUEUE):
-#     def _decorate(func):
-#         @wraps(func)
-#         def __decorate(*args, **kwargs):
-#             if queue not in celery_config.queue_name_list:
-#                 raise Exception('queue not in [{0}]'.format(', '.join(celery_config.queue_name_list)))
-#             return func.apply_async(args=args, kwargs=kwargs, queue=queue)
-#         return __decorate
-#     return _decorate
+
+def task_status(task_func, task_id):
+    # 获取celery之中 task_id的状态信息
+    the_task = task_func.AsyncResult(task_id)   # 获取状态信息
+    if  the_task.state=='PROGRESS':
+        resp = 'progress', the_task.info
+    elif  the_task.state=='SUCCESS':
+        resp = 'success', the_task.info
+    elif the_task.state == 'PENDING':   # 任务处于排队之中
+        resp = 'waitting', the_task.info
+    else:
+        resp = the_task.state, the_task.info
+    return resp

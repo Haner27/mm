@@ -7,4 +7,6 @@ syntax: glob
 configs/config.py
 test/reports/*
 api/docs/*
+mq/logs
+mq/pids
 .idea

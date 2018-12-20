@@ -32,19 +32,17 @@ def app_check_api_field_func(app):
     for key in app.blueprints:
         if key not in app.before_first_request_funcs:
             app.before_request_funcs[key] = []
-        # Todo: 添加请求参数校验方法
-        # app.before_first_request_funcs.append()
 
 
 def create_app():
     app = Flask(__name__)
 
-    #
-
     # 注册蓝图
     register_blueprints(app)
 
+    # 检查api字段的定义
     validate_api_defined_field(app)
 
+    # 统一给蓝图添加before_request_funcs
     app_check_api_field_func(app)
     return app
